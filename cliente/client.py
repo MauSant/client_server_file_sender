@@ -1,21 +1,27 @@
 from typing import Optional, Dict
+import sockets.socket as socket_yuri
+import os
 # from socket import Socket
 
 
 
 def client_controller(
                       action:str,
+                      host:str,
+                      port:str,
                       keyword: Optional[str]= None,
                       file_path: Optional[str]= None,
                       replic_number: Optional[int]= None
                       ) -> None:
-    socket = create_sockets()
+    socket = prepare_socket(host, port)
     args = load_args(socket, action, keyword, file_path, replic_number)
     funcs_dict = load_funcs()
     response = execute_action(action, funcs_dict, args)
 
-def create_sockets():
-    pass
+def prepare_socket(host:str, port:str):
+   socket = socket_yuri.Socket()
+   socket.connect(host, port)
+   return socket
 
 def load_funcs():
     funcs_dict = {
