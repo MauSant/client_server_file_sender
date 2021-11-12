@@ -1,8 +1,7 @@
 from typing import Optional, Dict
-import sockets.socket as socket_yuri
 import os
 # from socket import Socket
-from cliente.client_config import ClientConfig  as config
+from client_config import ClientConfig  as config
 
 
 def client_controller(
@@ -25,9 +24,11 @@ def client_controller(
     response = execute_action(action, funcs_dict, args)
 
 def prepare_socket(host:str, port:str):
-   socket = socket_yuri.Socket()
-   socket.connect(host, port)
-   return socket
+    # socket = socket_yuri.Socket()
+    # socket.connect(host, port)
+    return 0
+    return socket
+
 
 def load_funcs():
     funcs_dict = {
@@ -53,27 +54,22 @@ def load_args(
     }
     return args
 
-def retrieve(
-             socket:object,
-             action:str,
-             keyword:str,
-             file_path:str,
-             replic_number:int,
-            ) -> bytes:
+def retrieve(args) -> bytes:
     print('retrieve')
+    socket = args['socket']
+    action = args['action']
+    keyword = args['keyword']
+    
 
     '''Não esquece de colocar o listening'''
     pass
 
-def send_file(
-              socket:object,
-              action:str,
-              keyword:str,
-              file_path:str,
-              replic_number:int
-            ):
+def send_file(args: Dict) -> None:
     print('send_file')
-
+    socket = args['socket']
+    action = args['action']
+    file_path = args['file_path']
+    replic_number = args['replic_number']
     pass
 
 def change_replic(
@@ -91,7 +87,7 @@ def execute_action(
                    funcs_dict: Dict,
                    args: Dict) -> str:
     func = funcs_dict[action]
-    response = func(**args)
+    response = func(args)
     return response
 
 
