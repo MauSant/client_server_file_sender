@@ -29,15 +29,6 @@ def prepare_socket(host:str, port:str):
     return 0
     return socket
 
-
-def load_funcs():
-    funcs_dict = {
-        "retrieve": retrieve,
-        "send_file": send_file,
-        "change_replic": change_replic,
-    } 
-    return funcs_dict  
-
 def load_args(
               socket:object,
               action:str,
@@ -54,13 +45,29 @@ def load_args(
     }
     return args
 
-def retrieve(args) -> bytes:
+def load_funcs():
+    funcs_dict = {
+        "retrieve": retrieve,
+        "send_file": send_file
+    } 
+    return funcs_dict  
+
+def execute_action(
+                   action:str,
+                   funcs_dict: Dict,
+                   args: Dict) -> str:
+    func = funcs_dict[action]
+    response = func(args)
+    return response
+
+def retrieve(args: Dict) -> bytes:
     print('retrieve')
     socket = args['socket']
     action = args['action']
     keyword = args['keyword']
-    
 
+
+    
     '''Não esquece de colocar o listening'''
     pass
 
@@ -72,23 +79,7 @@ def send_file(args: Dict) -> None:
     replic_number = args['replic_number']
     pass
 
-def change_replic(
-                  socket:object,
-                  action:str,
-                  keyword:str,
-                  file_path:str,
-                  replic_number:int
-                ):
-    print('_change_replic')
-    pass
 
-def execute_action(
-                   action:str,
-                   funcs_dict: Dict,
-                   args: Dict) -> str:
-    func = funcs_dict[action]
-    response = func(args)
-    return response
 
 
 
