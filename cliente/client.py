@@ -8,38 +8,40 @@ def client_controller(
                       action:str,
                       keyword: Optional[str] = None,
                       file_path: Optional[str] = None,
-                      replic_number: Optional[int] = None
+                      replic_number: Optional[int] = None,
+                      arquivo: Optional[str] = None,
+                      msg: Optional[str] = None,
                       ) -> None:
     host = config.MAIN_SERVER_HOST
     port = config.MAIN_SERVER_PORT
-    socket = prepare_socket(host, port)
     args = load_args(
-                     socket,
                      action,
                      keyword,
                      file_path,
-                     replic_number
+                     replic_number,
+                     arquivo,
+                     msg,
+
                     )
     funcs_dict = load_funcs()
     response = execute_action(action, funcs_dict, args)
 
-def prepare_socket():
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect(config.ENDRÇ)
 
 def load_args(
-              socket:object,
               action:str,
               keyword:str,
               file_path:str,
               replic_number:int,
+              arquivo:str,
+              msg: str
              ):
     args = {
-        'socket': socket,
         'action': action,
         'keyword': keyword,
         'file_path': file_path,
         'replic_number': replic_number,
+        'arquivo': arquivo,
+        'msg' : msg,
     }
     return args
 
@@ -60,7 +62,6 @@ def execute_action(
 
 def retrieve(args: Dict) -> bytes:
     print('retrieve')
-    socket = args['socket']
     action = args['action']
     keyword = args['keyword']
 
@@ -71,11 +72,27 @@ def retrieve(args: Dict) -> bytes:
 
 def send_file(args: Dict) -> None:
     print('send_file')
-    socket = args['socket']
+
     action = args['action']
     file_path = args['file_path']
     replic_number = args['replic_number']
-    pass
+    arquivo = args['arquivo']
+    data = args ['arquivo']
+
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(config.ENDRÇ)
+
+    file = open(arquivo = input)
+    data = file.read
+    
+    client.send(arquivo.encode(config.FORMAT))
+    msg = client.recv(config.SIZE).decode(config.FORMAT)
+    print(f"[SERVER]: {msg}")
+    
+
+   
+
+    
 
 
 
