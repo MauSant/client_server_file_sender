@@ -12,19 +12,19 @@ def store_file(
              name:str,
              file:object
             ):
-    file_copy = open(name, 'w')
-    file_copy.write(file)
+    file_copy = open("servidor/armazenar/"+name, "w")
+    for f in file.readlines():
+        file_copy.write(f)
     file_copy.close()
 
 def add_file(
              name:str,
-             diretectory:str,
              copies:int,
              file:object
             ):
-    os.mkdir(diretectory)
-    store_file(diretectory+"/"+name, file)
-    file_storage.append(name, [diretectory])
+    store_file(name, file)
+    file_storage.append(name)
+    file_storage.append(["servidor/armazenar/"+name])
     i = 0
     while i < copies-1:
         connect_socket.connect((servers_storage[i],port))
@@ -36,9 +36,10 @@ def add_file(
         connect_socket.close()
 
 def erase_file(
-            file:object
+            file:str
             ):
-    os.remove(file)
+    os.remove("servidor/armazenar/"+file)
 
-arquivo = open("teste.txt", "r")
-store_file("testeCopia.txt", arquivo)
+#arquivo = open("servidor/armazenar/teste.txt", "r")
+#add_file("testeCopia.txt", 2, arquivo)
+erase_file("testeCopia.txt")
