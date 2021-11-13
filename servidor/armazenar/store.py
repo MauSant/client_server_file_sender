@@ -12,7 +12,7 @@ def store_file(
              name:str,
              file:object
             ):
-    file_copy = open(name, w)
+    file_copy = open(name, 'w')
     file_copy.write(file)
     file_copy.close()
 
@@ -26,7 +26,7 @@ def add_file(
     store_file(diretectory+"/"+name, file)
     file_storage.append(name, [diretectory])
     i = 0
-    while i < copies:
+    while i < copies-1:
         connect_socket.connect((servers_storage[i],port))
         aux = file_storage[-1]
         aux.append(servers_storage[i])
@@ -34,3 +34,11 @@ def add_file(
         for f in file.readlines():
             connect_socket.send(f)
         connect_socket.close()
+
+def erase_file(
+            file:object
+            ):
+    os.remove(file)
+
+arquivo = open("teste.txt", "r")
+store_file("testeCopia.txt", arquivo)
