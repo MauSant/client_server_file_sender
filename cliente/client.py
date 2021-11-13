@@ -1,6 +1,6 @@
 from typing import Optional, Dict
 import os
-# from socket import Socket
+import socket
 from client_config import ClientConfig  as config
 
 
@@ -23,11 +23,9 @@ def client_controller(
     funcs_dict = load_funcs()
     response = execute_action(action, funcs_dict, args)
 
-def prepare_socket(host:str, port:str):
-    # socket = socket_yuri.Socket()
-    # socket.connect(host, port)
-    return 0
-    return socket
+def prepare_socket():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(config.ENDRÇ)
 
 def load_args(
               socket:object,
