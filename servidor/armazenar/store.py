@@ -42,4 +42,4 @@ def erase_file(
 
 #arquivo = open("servidor/armazenar/teste.txt", "r")
 #add_file("testeCopia.txt", 2, arquivo)
-erase_file("testeCopia.txt")
+# erase_file("testeCopia.txt")
