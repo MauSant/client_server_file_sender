@@ -32,22 +32,13 @@ def server_listening(socket):
 
         args = load_args(socket, client_socket ,header)
 
-        header['action'] = translate_action(header)
-
         response = execute_action(
-                                  action=header['action'],
+                                  action=args['action'],
                                   funcs_dict=funcs_dict,
                                   args=args
                                  )
 
-def translate_action(header: Dict) -> str:
-    action = header['action']
-    if action == 'send':
-        return 'store'
-    elif action == 'retrieve':
-        return 'search'
-    else:
-        raise ValueError('Nenhuma ação é valida')
+
 
 '''As funções a serem utilizadas no execute_action, estão aqui '''
 def load_funcs():
@@ -76,19 +67,24 @@ def receive_header(socket:object) -> Dict:
 
 def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
     args = header
+    args['action'] = translate_action(header)
     args['socket'] = socket
     args['client_socket'] = client_socket
     return args
+
+def translate_action(header: Dict) -> str:
+    action = header['action']
+    if action == 'send':
+        return 'store'
+    elif action == 'retrieve':
+        return 'search'
+    else:
+        raise ValueError('Nenhuma ação é valida')
 
 def execute_action(action:str, funcs_dict: Dict, args: Dict) -> str:
     func = funcs_dict[action]
     response = func(args)
     return response
-
-def change_replic(args):
-    '''TALVEZZ SEJA DESNECESSARIA '''
-    print('_change_replic')
-    pass
 
 def store(args:Dict) -> str:
     print('send_file')
@@ -97,13 +93,13 @@ def store(args:Dict) -> str:
     file_path = args['file_path']
     replic_number = args['replic_number']
 
-    
     name = get_base_file_name(file_path)
 
     file_storage = []
     servers_storage = []
 
     add_file(name=name,copies=replic_number, file='')
+
 
 
     return 'Deu certo'
