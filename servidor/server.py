@@ -110,5 +110,6 @@ def search(args: Dict) -> bytes:
     keyword = args['keyword']
     pass
 
-
+def send_file(header:Dict, file:bytes) -> str:
+    pass
 
