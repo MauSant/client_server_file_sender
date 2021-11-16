@@ -43,7 +43,6 @@ def server_listening(socket):
 '''As funções a serem utilizadas no execute_action, estão aqui '''
 def load_funcs():
     funcs_dict = {
-        "change_replic": change_replic,
         "store": store,
         "search": search
     } 

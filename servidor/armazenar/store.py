@@ -1,12 +1,29 @@
 import  os
+import json
 import	socket
 
 
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-file_storage = []
-servers_storage = []
+#'First',['a', 'b'],'Second',['c', 'd']
+#'main','son1','son2'
+my_dict = {'files' : [], 'servers' : []}
+
+file_storage = my_dict["files"]
+servers_storage = my_dict["servers"]
+
+def storage_load():
+    with open('servidor/armazenar/storage.json', 'r') as fp:
+        data = json.load(fp)
+    my_dict["files"] = data["files"]
+    my_dict["servers"] = data["servers"]
+    file_storage.append(my_dict["files"])
+    servers_storage.append(my_dict["servers"])
+
+def storage_save():
+    with open('servidor/armazenar/storage.json', 'w') as fp:
+        json.dump(my_dict, fp)
 
 def store_file(
              name:str,
@@ -36,11 +53,30 @@ def add_file(
         connect_socket.close()
 
 def erase_file(
-            file:str
+                file:str
             ):
     os.remove("servidor/armazenar/"+file)
 
-if __name__ == '__main__':
-    #arquivo = open("servidor/armazenar/teste.txt", "r")
-    #add_file("testeCopia.txt", 2, arquivo)
-    # erase_file("testeCopia.txt")
+def remove_file(
+                 file:str
+                ):
+    erase_file(file)
+    position = file_storage.index(file)
+    for host in servers_storage:
+         connect_socket.connect((host,port))
+         connect_socket.send("Erase file".encode)
+         connect_socket.send(file.encode)
+         connect_socket.close()
+
+
+def add_host(
+             name:str
+            ):
+    servers_storage.append(name)
+
+def remove_host(name:str):
+    servers_storage.remove(name)
+
+storage_load()
+print(file_storage[1])
+print(servers_storage[0])
