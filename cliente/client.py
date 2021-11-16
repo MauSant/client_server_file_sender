@@ -9,46 +9,47 @@ def client_controller(
                       keyword: Optional[str] = None,
                       file_path: Optional[str] = None,
                       replic_number: Optional[int] = None,
-                      arquivo: Optional[str] = None,
-                      msg: Optional[str] = None,
                       ) -> None:
-    host = config.MAIN_SERVER_HOST
-    port = config.MAIN_SERVER_PORT
+
+    request_connection(config)
+
     args = load_args(
                      action,
                      keyword,
                      file_path,
-                     replic_number,
-                     arquivo,
-                     msg,
-
+                     replic_number
                     )
     funcs_dict = load_funcs()
     response = execute_action(action, funcs_dict, args)
 
+def request_connection(config) -> bool:
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(config.ENDRÇ)
+    except Exception:
+        print(f'Endereço não conectado: {config.ENDRÇ}')
+        return False
+    else:
+        return True
 
 def load_args(
               action:str,
               keyword:str,
               file_path:str,
               replic_number:int,
-              arquivo:str,
-              msg: str
              ):
     args = {
         'action': action,
         'keyword': keyword,
         'file_path': file_path,
         'replic_number': replic_number,
-        'arquivo': arquivo,
-        'msg' : msg,
     }
     return args
 
 def load_funcs():
     funcs_dict = {
         "retrieve": retrieve,
-        "send_file": send_file
+        "send": send_file
     } 
     return funcs_dict  
 
@@ -76,19 +77,20 @@ def send_file(args: Dict) -> None:
     action = args['action']
     file_path = args['file_path']
     replic_number = args['replic_number']
-    arquivo = args['arquivo']
     data = args ['arquivo']
 
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect(config.ENDRÇ)
-
-    file = open(arquivo = input)
+    
+ 
+    file = open(file_path, "r")
     data = file.read
     
     client.send(arquivo.encode(config.FORMAT))
     msg = client.recv(config.SIZE).decode(config.FORMAT)
     print(f"[SERVER]: {msg}")
     
+
+def mk_header():
+    pass
 
    
 
