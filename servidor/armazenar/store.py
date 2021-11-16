@@ -2,7 +2,6 @@ import  os
 import json
 import	socket
 
-
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -49,6 +48,8 @@ def add_file(
         aux.append(servers_storage[i])
         file_storage[-1] = aux
         for f in file.readlines():
+            header = mk_header()
+            connect_socket.send(header)
             connect_socket.send(f)
         connect_socket.close()
 
@@ -76,6 +77,7 @@ def add_host(
 
 def remove_host(name:str):
     servers_storage.remove(name)
+
 
 storage_load()
 print(file_storage[1])
