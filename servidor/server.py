@@ -3,6 +3,7 @@ import json
 # from socket import Socket
 from server_config import ServerConfig  as config
 from armazenar.store import add_file
+from ntpath import basename as get_base_file_name
 
 
 def server_controller() -> None:
@@ -19,6 +20,7 @@ def prepare_socket(host:str, port:str):
     
 def server_listening(socket):
     funcs_dict = load_funcs()
+    #socket.listening()
 
     while(True):
         permission, client_socket, address = accept_connection(socket)
@@ -30,11 +32,22 @@ def server_listening(socket):
 
         args = load_args(socket, client_socket ,header)
 
+        header['action'] = translate_action(header)
+
         response = execute_action(
                                   action=header['action'],
                                   funcs_dict=funcs_dict,
                                   args=args
                                  )
+
+def translate_action(header: Dict) -> str:
+    action = header['action']
+    if action == 'send':
+        return 'store'
+    elif action == 'retrieve':
+        return 'search'
+    else:
+        raise ValueError('Nenhuma ação é valida')
 
 '''As funções a serem utilizadas no execute_action, estão aqui '''
 def load_funcs():
@@ -57,10 +70,8 @@ def accept_connection(socket:object) -> Tuple:
     return permission, client_socket, address
 
 def receive_header(socket:object) -> Dict:
-    '''Pseudocodigo '''
-    #header_json = socket.rcv.decode
-    #header = json.loads(header_json)
-    header = 0 #para testar
+    serial = socket.recv.decode('utf-8')
+    header = json.loads(serial)
     return header
 
 def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
@@ -69,7 +80,7 @@ def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
     args['client_socket'] = client_socket
     return args
 
-def execute_action(action:str, funcs_dict: Dict, args: Dict) -> Dict:
+def execute_action(action:str, funcs_dict: Dict, args: Dict) -> str:
     func = funcs_dict[action]
     response = func(args)
     return response
@@ -86,7 +97,16 @@ def store(args:Dict) -> str:
     file_path = args['file_path']
     replic_number = args['replic_number']
 
-    pass
+    
+    name = get_base_file_name(file_path)
+
+    file_storage = []
+    servers_storage = []
+
+    add_file(name=name,copies=replic_number, file='')
+
+
+    return 'Deu certo'
 
 def search(args: Dict) -> bytes:
     print('retrieve')

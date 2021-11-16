@@ -40,6 +40,7 @@ def erase_file(
             ):
     os.remove("servidor/armazenar/"+file)
 
-#arquivo = open("servidor/armazenar/teste.txt", "r")
-#add_file("testeCopia.txt", 2, arquivo)
-# erase_file("testeCopia.txt")
+if __name__ == '__main__':
+    #arquivo = open("servidor/armazenar/teste.txt", "r")
+    #add_file("testeCopia.txt", 2, arquivo)
+    # erase_file("testeCopia.txt")
