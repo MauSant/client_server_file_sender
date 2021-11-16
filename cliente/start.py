@@ -5,6 +5,6 @@ if __name__ == '__main__':
     
     client_controller(
                       action='send',
-                      file_path='BD_client/test.txt',
+                      file_path='cliente/BD_client/test.txt',
                       replic_number=2
                      )

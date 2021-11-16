@@ -1,8 +1,8 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 import os
 import socket
 from client_config import ClientConfig  as config
-
+import json
 
 def client_controller(
                       action:str,
@@ -11,9 +11,12 @@ def client_controller(
                       replic_number: Optional[int] = None,
                       ) -> None:
 
-    request_connection(config)
+    permission, client_socket = request_connection(config)
+    if not not permission:
+        raise ConnectionError('Falha na conexão, tente mais tarde')
 
     args = load_args(
+                     client_socket,
                      action,
                      keyword,
                      file_path,
@@ -22,23 +25,25 @@ def client_controller(
     funcs_dict = load_funcs()
     response = execute_action(action, funcs_dict, args)
 
-def request_connection(config) -> bool:
+def request_connection(config) -> Tuple:
     try:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(config.ENDRÇ)
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(config.ENDRÇ)
     except Exception:
         print(f'Endereço não conectado: {config.ENDRÇ}')
-        return False
+        return False, None
     else:
-        return True
+        return True, client_socket
 
 def load_args(
+              client_socket:object,
               action:str,
               keyword:str,
               file_path:str,
               replic_number:int,
              ):
     args = {
+        'client_socket':client_socket,
         'action': action,
         'keyword': keyword,
         'file_path': file_path,
@@ -74,23 +79,29 @@ def retrieve(args: Dict) -> bytes:
 def send_file(args: Dict) -> None:
     print('send_file')
 
-    action = args['action']
+    client_socket = args['client_socket']
     file_path = args['file_path']
-    replic_number = args['replic_number']
-    data = args ['arquivo']
-
     
+    header = mk_header(args)
+    client_socket.sendall(header) # send header
  
+    '''Isso deve funcionar para um txt, mas e se precisar mandar um pdf ou imagem? '''
     file = open(file_path, "r")
-    data = file.read
+    data = file.read()
+    client_socket.sendall(data) #send file
+    ''' '''
     
-    client.send(arquivo.encode(config.FORMAT))
-    msg = client.recv(config.SIZE).decode(config.FORMAT)
+    msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
     print(f"[SERVER]: {msg}")
     
 
-def mk_header():
-    pass
+def mk_header(args: Dict) -> bytes:
+    args.pop('client_socket', None) #Não precisa enviar o client socket
+    header_j = json.dumps(args)
+    serialized = header_j.encode(config.FORMAT)#client
+    # json.loads(b.decode('utf-8'))#server
+    
+    return serialized
 
    
 
