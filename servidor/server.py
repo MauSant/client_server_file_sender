@@ -1,4 +1,4 @@
-from typing import Collection, Optional, Dict
+from typing import Collection, Optional, Dict, Tuple
 import json
 # from socket import Socket
 from server_config import ServerConfig  as config
@@ -45,7 +45,7 @@ def load_funcs():
     } 
     return funcs_dict  
 
-def accept_connection(socket:object)->Tuple:
+def accept_connection(socket:object) -> Tuple:
     #Retorna True or False E
     #ACEITA A CONEXÃO e retorna o socket do client
     # client_socket, address = socket.accept()
