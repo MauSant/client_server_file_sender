@@ -77,6 +77,8 @@ def add_host(
 def remove_host(name:str):
     servers_storage.remove(name)
 
-storage_load()
-print(file_storage[1])
-print(servers_storage[0])
+if __name__ == '__main__':
+
+    storage_load()
+    print(file_storage[1])
+    print(servers_storage[0])

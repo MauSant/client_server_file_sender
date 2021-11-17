@@ -1,10 +1,10 @@
 from typing import Collection, Optional, Dict, Tuple
 import json
-# from socket import Socket
+import socket
 from server_config import ServerConfig  as config
 from armazenar.store import add_file
 from ntpath import basename as get_base_file_name
-
+import time
 
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
@@ -13,54 +13,58 @@ def server_controller() -> None:
     server_listening(socket)
     
 def prepare_socket(host:str, port:str):
-    # socket = socket_yuri.Socket()
-    # socket.connect(host, port)
-    return 0
-    return socket    
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((host, port))
+    return server_socket    
     
 def server_listening(socket):
     funcs_dict = load_funcs()
-    #socket.listening()
+    socket.listen()
 
     while(True):
+        print('esperando conexão')
+        time.sleep(0.5)
         permission, client_socket, address = accept_connection(socket)
         if not permission:
             continue #Caso a conexão n for aceita, não precisa ler o restante do código e pula pro proximo
-
+        print(f'Conectado a {address}')
 
         header = receive_header(client_socket)
 
         args = load_args(socket, client_socket ,header)
-
-        response = execute_action(
-                                  action=args['action'],
-                                  funcs_dict=funcs_dict,
-                                  args=args
-                                 )
-
+        try:
+            response = execute_action(
+                                    action=args['action'],
+                                    funcs_dict=funcs_dict,
+                                    args=args
+                                    )
+        except Exception:
+            socket.close()
+            client_socket.close()
 
 
 '''As funções a serem utilizadas no execute_action, estão aqui '''
 def load_funcs():
     funcs_dict = {
         "store": store,
-        "search": search
+        "retrieve": retrieve_file
     } 
     return funcs_dict  
 
 def accept_connection(socket:object) -> Tuple:
     #Retorna True or False E
     #ACEITA A CONEXÃO e retorna o socket do client
-    # client_socket, address = socket.accept()
+    try:
+        client_socket, address = socket.accept()
+    except Exception as e:
+        print('Falha ao aceitar conexão')
+        return False, None, None
+    else:
+        return True, client_socket, address
     
-    #para teste
-    permission = True
-    client_socket = 0
-    address = 0
-    return permission, client_socket, address
 
 def receive_header(socket:object) -> Dict:
-    serial = socket.recv.decode('utf-8')
+    serial = socket.recv(1024).decode('utf-8')
     header = json.loads(serial)
     return header
 
@@ -75,8 +79,8 @@ def translate_action(header: Dict) -> str:
     action = header['action']
     if action == 'send':
         return 'store'
-    elif action == 'retrieve':
-        return 'search'
+    elif action == 'search':
+        return 'retrieve'
     else:
         raise ValueError('Nenhuma ação é valida')
 
@@ -86,19 +90,23 @@ def execute_action(action:str, funcs_dict: Dict, args: Dict) -> str:
     return response
 
 def store(args:Dict) -> str:
-    print('send_file')
+    print('store')
+    client_socket = args['client_socket']
     socket = args['socket']
     action = args['action']
     file_path = args['file_path']
     replic_number = args['replic_number']
 
     name = get_base_file_name(file_path)
+    print('Esperando receber file')
+    file = client_socket.recv(1024).decode('utf-8')
+    # file = client_socket.recv(2048)
 
-    add_file(name=name,copies=replic_number, file='')
+    add_file(name=name,copies=replic_number, file=file)
 
     return 'Deu certo'
 
-def search(args: Dict) -> bytes:
+def retrieve_file(args: Dict) -> bytes:
     print('retrieve')
     socket = args['socket']
     action = args['action']
