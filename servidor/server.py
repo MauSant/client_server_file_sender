@@ -94,12 +94,7 @@ def store(args:Dict) -> str:
 
     name = get_base_file_name(file_path)
 
-    file_storage = []
-    servers_storage = []
-
     add_file(name=name,copies=replic_number, file='')
-
-
 
     return 'Deu certo'
 
