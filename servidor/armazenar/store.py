@@ -2,7 +2,10 @@ import  os
 import json
 import	socket
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 153aa5fd42955231ab6ba119edcc5ed37d8691e5
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -49,6 +52,8 @@ def add_file(
         aux.append(servers_storage[i])
         file_storage[-1] = aux
         for f in file.readlines():
+            header = mk_header()
+            connect_socket.send(header)
             connect_socket.send(f)
         connect_socket.close()
 
