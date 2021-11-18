@@ -2,10 +2,6 @@ import  os
 import json
 import	socket
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 153aa5fd42955231ab6ba119edcc5ed37d8691e5
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -30,32 +26,31 @@ def storage_save():
 
 def store_file(
              name:str,
-             file:object
+             data:object
             ):
-    file_copy = open("servidor/armazenar/"+name, "w")
-    for f in file.readlines():
-        file_copy.write(f)
+    file_copy = open("servidor/armazenar/"+name, "wb")
+    file_copy.write(data)
     file_copy.close()
 
 def add_file(
              name:str,
              copies:int,
-             file:object
+             data:bytes
             ):
-    store_file(name, file)
+    store_file(name, data)
     file_storage.append(name)
     file_storage.append(["servidor/armazenar/"+name])
-    i = 0
-    while i < copies-1:
-        connect_socket.connect((servers_storage[i],port))
-        aux = file_storage[-1]
-        aux.append(servers_storage[i])
-        file_storage[-1] = aux
-        for f in file.readlines():
-            header = mk_header()
-            connect_socket.send(header)
-            connect_socket.send(f)
-        connect_socket.close()
+    # i = 0
+    # while i < copies-1:
+    #     connect_socket.connect((servers_storage[i],port))
+    #     aux = file_storage[-1]
+    #     aux.append(servers_storage[i])
+    #     file_storage[-1] = aux
+    #     for f in data.readlines():
+    #         # header = mk_header()
+    #         # connect_socket.send(header)
+    #         connect_socket.send(f)
+    #     connect_socket.close()
 
 def erase_file(
                 file:str
@@ -83,7 +78,7 @@ def remove_host(name:str):
     servers_storage.remove(name)
 
 if __name__ == '__main__':
-
-    storage_load()
-    print(file_storage[1])
-    print(servers_storage[0])
+    pass
+    # storage_load()
+    # print(file_storage[1])
+    # print(servers_storage[0])
