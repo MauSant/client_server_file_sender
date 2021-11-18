@@ -2,10 +2,6 @@ import  os
 import json
 import	socket
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 153aa5fd42955231ab6ba119edcc5ed37d8691e5
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
