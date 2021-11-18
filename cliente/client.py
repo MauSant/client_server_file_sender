@@ -9,7 +9,7 @@ def client_controller(
                       keyword: Optional[str] = None,
                       file_path: Optional[str] = None,
                       replic_number: Optional[int] = None,
-                      ) -> None:
+) -> None:
 
     permission, client_socket = request_connection(config)
     if not not permission:
