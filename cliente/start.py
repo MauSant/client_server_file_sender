@@ -5,6 +5,6 @@ if __name__ == '__main__':
     
     client_controller(
                       action='send',
-                      file_path='cliente/BD_client/test.txt',
+                      file_path='cliente/BD_client/keanu_inner_voice.jpg',
                       replic_number=2
                      )
