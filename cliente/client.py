@@ -86,7 +86,7 @@ def send_file(args: Dict) -> None:
     
     header = mk_header(args)
     client_socket.sendall(header) # send header
- 
+    #Fazer funcao
     with open(file_path, 'rb') as file:
         while (True):
             print ('Sending...')
