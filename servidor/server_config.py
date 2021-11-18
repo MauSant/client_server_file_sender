@@ -3,7 +3,8 @@ class ServerConfig:
 
     MAIN_SERVER_HOST = 'localhost'
     # MAIN_SERVER_HOST = socket.gethostbyname(socket.gethostname())
-    MAIN_SERVER_PORT = 4456
+    MAIN_SERVER_PORT = 4440
+    SIZE = 1024
     SERVERS_DICT = {
         'server1': ('host','port'),
         'server2': ('host','port'),
