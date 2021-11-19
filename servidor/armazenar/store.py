@@ -1,11 +1,8 @@
 import  os
-import json
+import  json
 import	socket
+from time import sleep
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 153aa5fd42955231ab6ba119edcc5ed37d8691e5
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -30,32 +27,41 @@ def storage_save():
 
 def store_file(
              name:str,
-             file:object
+             data:bytes
             ):
-    file_copy = open("servidor/armazenar/"+name, "w")
-    for f in file.readlines():
-        file_copy.write(f)
+    file_copy = open("servidor/armazenar/"+name, "wb")
+    file_copy.write(data)
     file_copy.close()
 
 def add_file(
              name:str,
              copies:int,
-             file:object
+             data:bytes
             ):
-    store_file(name, file)
+    store_file(name, data)
     file_storage.append(name)
     file_storage.append(["servidor/armazenar/"+name])
     i = 0
+    aux = file_storage[-1]
     while i < copies-1:
-        connect_socket.connect((servers_storage[i],port))
-        aux = file_storage[-1]
-        aux.append(servers_storage[i])
-        file_storage[-1] = aux
-        for f in file.readlines():
-            header = mk_header()
-            connect_socket.send(header)
-            connect_socket.send(f)
-        connect_socket.close()
+         connect_socket.connect((servers_storage[i],port))
+         aux.append(servers_storage[i])
+         send_bytes(name)
+         connect_socket.close()
+
+def send_bytes(
+                file_name:str
+              ):
+    with open("servidor/armazenar/"+file_name, 'rb') as file:
+        while (True):
+            bts = file.read(1024)
+            if not bts:
+                bts = b'ENDPOINT'
+                connect_socket.send(bts)
+                break
+            connect_socket.send(bts)
+            sleep(0.5)
+        file.close()
 
 def erase_file(
                 file:str
@@ -83,7 +89,7 @@ def remove_host(name:str):
     servers_storage.remove(name)
 
 if __name__ == '__main__':
-
-    storage_load()
-    print(file_storage[1])
-    print(servers_storage[0])
+    pass
+    # storage_load()
+    # print(file_storage[1])
+    # print(servers_storage[0])
