@@ -1,10 +1,13 @@
 from client import client_controller
+from cliente.interface import face
+from cliente.interface.face import interface
 
 if __name__ == '__main__':
     # action, server_host, server_port = interface()
+    interface()
     
     client_controller(
-                      action='send',
-                      file_path='cliente/BD_client/keanu_inner_voice.jpg',
-                      replic_number=2
+                      action= face.action,
+                      file_path=face.local_arquivo,
+                      replic_number=face.replics
                      )
