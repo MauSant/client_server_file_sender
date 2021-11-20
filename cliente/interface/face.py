@@ -1,7 +1,9 @@
 def interface():
-    
-    while True :
-        global action
+
+    global action
+    action = 0
+    while action != '4' :
+        
         print('Bem Vindo ao YBM Storage\n Qual Operação Deseja Realizar ?\n 1-Salvar Arquivo\n 2-Buscar Arquivo\n 3-Alterar numero de Replicas\n 4-Sair')
         action = input()
 
@@ -22,7 +24,5 @@ def interface():
             action = 'change'
             print('Qual o novo numero de replicas a serem salvas ?')
             replics = input()
-        elif action == '4' :
-            break
 
 interface()
