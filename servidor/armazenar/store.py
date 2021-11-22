@@ -63,6 +63,16 @@ def send_bytes(
             sleep(0.5)
         file.close()
 
+def retrieve_file ():
+    data = b''
+    bts = b''
+    while True:
+        print("Receiving...")
+        bts = client_socket.recv(1024)
+        if bts == b'ENDPOINT':
+            break
+        data += bts
+
 def erase_file(
                 file:str
             ):
@@ -87,6 +97,15 @@ def add_host(
 
 def remove_host(name:str):
     servers_storage.remove(name)
+
+def mk_header(args: Dict) -> bytes:
+    args.pop('client_socket', None) #Não precisa enviar o client socket
+    header_j = json.dumps(args)
+    serialized = header_j.encode(config.FORMAT)#client
+    # json.loads(b.decode('utf-8'))#server
+    
+    return serialized
+
 
 if __name__ == '__main__':
     pass
