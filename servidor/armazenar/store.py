@@ -109,14 +109,11 @@ def remove_file(
     erase_file(file)
     position = my_dict['files']
     repositories = position[file]
-    #position = file_storage.index(file)
+    header = mk_header(load_args("erase", file))
     for host in repositories:
          connect_socket.connect((host,port))
-         #finalizar a chamada de função
-         connect_socket.send("Erase file".encode)
-         connect_socket.send(file.encode)
+         connect_socket.send(header)
          connect_socket.close()
-
 
 def add_host(
              name:str
