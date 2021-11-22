@@ -3,16 +3,16 @@ import os
 import socket
 from client_config import ClientConfig  as config
 import json
-
+from time import sleep
 def client_controller(
                       action:str,
                       keyword: Optional[str] = None,
                       file_path: Optional[str] = None,
                       replic_number: Optional[int] = None,
-                      ) -> None:
+) -> None:
 
     permission, client_socket = request_connection(config)
-    if not not permission:
+    if not permission:
         raise ConnectionError('Falha na conexão, tente mais tarde')
 
     args = load_args(
@@ -23,8 +23,10 @@ def client_controller(
                      replic_number
                     )
     funcs_dict = load_funcs()
-    response = execute_action(action, funcs_dict, args)
-
+    try:
+        response = execute_action(action, funcs_dict, args)
+    except Exception:
+        socket.close()
 def request_connection(config) -> Tuple:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -84,13 +86,20 @@ def send_file(args: Dict) -> None:
     
     header = mk_header(args)
     client_socket.sendall(header) # send header
- 
-    '''Isso deve funcionar para um txt, mas e se precisar mandar um pdf ou imagem? '''
-    file = open(file_path, "r")
-    data = file.read()
-    client_socket.sendall(data) #send file
-    ''' '''
-    
+    #Fazer funcao
+    with open(file_path, 'rb') as file:
+        while (True):
+            print ('Sending...')
+            bts = file.read(config.SIZE)
+            if not bts:
+                bts = b'ENDPOINT'
+                client_socket.send(bts)
+                break
+            client_socket.send(bts)
+            sleep(0.5)
+            
+            print(f'Sent.')
+    client_socket.close()
     msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
     print(f"[SERVER]: {msg}")
     
