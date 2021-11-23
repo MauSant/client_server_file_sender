@@ -27,7 +27,7 @@ def interface():
             print('Qual o nome do arquivo a ser buscado ?')
             global nome_arquivo
             nome_arquivo = input()
-            client_controller(action= action, keyword=nome_arquivo )
+            client_controller(action= action, keyword=nome_arquivo)
             
         elif action == '3' :
             action = 'change'

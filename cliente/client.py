@@ -25,8 +25,10 @@ def client_controller(
     funcs_dict = load_funcs()
     try:
         response = execute_action(action, funcs_dict, args)
-    except Exception:
+    except Exception as e:
+        print(e)
         socket.close()
+        
 def request_connection(config) -> Tuple:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -100,8 +102,8 @@ def send_file(args: Dict) -> None:
             
             print(f'Sent.')
     client_socket.close()
-    msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
-    print(f"[SERVER]: {msg}")
+    # msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
+    # print(f"[SERVER]: {msg}")
     
 
 def mk_header(args: Dict) -> bytes:
