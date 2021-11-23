@@ -73,12 +73,18 @@ def execute_action(
 def retrieve(args: Dict) -> bytes:
     print('retrieve')
     client_socket = args['client_socket']
+    keyword = args['keyword']
 
 
     header = mk_header(args)
     client_socket.sendall(header) # send header
     print('Retrieve sent header')
     
+    data = receive_file(client_socket)
+    file_copy = open("cliente/BD_client/"+keyword, "wb")
+    file_copy.write(data)
+    file_copy.close()
+
     '''Não esquece de colocar o listening'''
     pass
 
@@ -117,6 +123,16 @@ def mk_header(args: Dict) -> bytes:
     return serialized
 
    
+def receive_file(client_socket:object):
+    data = b''
+    bts = b''
+    while True:
+        print("Receiving...")
+        bts = client_socket.recv(1024)
+        if bts == b'ENDPOINT':
+            break
+        data += bts
+    return data
 
     
 

@@ -56,13 +56,13 @@ def add_file(
              data:bytes
             ):
     store_file(name, data)
-    my_dict['files'].append(name)
-    my_dict['files'].append(["servidor/armazenar/"+name])
+    my_dict['files'][name] = []
+    # my_dict['files'][name].append("servidor/armazenar/"+name)
     i = 0
-    aux = my_dict['files'][-1]
+    list_aux = my_dict['files'][name]
     while i < copies-1:
          connect_socket.connect((my_dict['servers'][i],port))
-         aux.append(my_dict['servers'][i])
+         list_aux.append(my_dict['servers'][i])
          header = mk_header(load_args("store", name))
          connect_socket.send(header)
          send_bytes(name)
@@ -84,17 +84,28 @@ def send_bytes(
 
 def retrieve_file (
                     file_name:str,
-                    socket:object
+                    client_socket:object
                 ):
+
+    files_index = my_dict['file']
+    if not len(files_index[file_name] > 0 ):
+        print(f'arquivo não está no index do main server {file_name}')
+        return None
+
+    server_alt_addr = files_index[file_name][-1]
+    connect_socket.connect((server_alt_addr, port))
+
+
+
     header = mk_header(load_args("send file", file_name))
     connect_socket.send(header)
     bts = b''
     while True:
         bts = connect_socket.recv(1024)
         if bts == b'ENDPOINT':
-            socket.send(bts)
+            client_socket.send(bts) # Envia direto para o client
             break
-        socket.send(bts)
+        client_socket.send(bts)
         sleep(0.5)
     
 

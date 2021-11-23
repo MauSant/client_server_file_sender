@@ -81,7 +81,7 @@ def translate_action(header: Dict) -> str:
     action = header['action']
     if action == 'send':
         return 'store'
-    elif action == 'search':
+    elif action == 'retrieve':
         return 'retrieve'
     else:
         raise ValueError('Nenhuma ação é valida')
@@ -122,8 +122,10 @@ def receive_file(client_socket:object):
 def return_file(args: Dict) -> bytes:
     print('retrieve')
     socket = args['socket']
+    client_socket = args['client_socket']
     keyword = args['keyword']
-    retrieve_file(keyword,socket)
+
+    retrieve_file(keyword, client_socket)
     pass
 
 def change_storage(args: Dict):
