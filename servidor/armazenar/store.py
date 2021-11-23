@@ -36,7 +36,7 @@ def append_index(index_files, file_name, address) -> dict:
     try:
         index_files[file_name].append(address) #register on local(ram)
     except KeyError:# in case the key does not exists
-        index_files[file_name] = address
+        index_files[file_name] = [address]
     finally:
         return index_files
 
@@ -116,7 +116,7 @@ def search_file(keyword, index_files) -> list:
         return any_addr
 
 def valid_addr(list_addrs):
-    if list_addrs.empty:
+    if not list_addrs:
             raise ValueError('A lista de endereços está vazia!')
     for index in range(len(list_addrs)):
         try:
