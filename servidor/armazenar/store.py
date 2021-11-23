@@ -1,6 +1,6 @@
 import  os
 import  json
-from servidor.server import server_listening
+#from servidor.server import server_listening
 import	socket
 from time import sleep
 from typing import Dict
@@ -161,14 +161,14 @@ def manage_storage(file_name, replic_number):
     i = 0
     if len(list_addrs) > replic_number & replic_number > 2:
         while i < replic_number:
-          header = mk_header(load_args("erase", file))
+          header = mk_header({'action':'erase',  'keyword': file_name})
           connect_socket.connect((list_addrs.pop(-1)))
           connect_socket.send(header)
           connect_socket.close()
     else:
-        while i < replic_number-len(file) & replic_number < len(my_dict['servers']):
-          header = mk_header(load_args("store", file))
-          connect_socket.connect((acessa pela list_addrs))
+        while i < replic_number-len(file_name) & replic_number < len(list_addrs):
+          header = mk_header({'action':'store',  'keyword': file_name})
+          connect_socket.connect((list_addrs))
           connect_socket.send(header)
           send_bytes(file_name)
           connect_socket.close()
