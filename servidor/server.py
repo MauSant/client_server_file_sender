@@ -51,7 +51,8 @@ def load_funcs():
         "send": store,
         "retrieve": return_file,
         "change": change_storage,
-        'store_inremote': store_inremote
+        'store_inremote': store_inremote,
+        'get_inremote':get_inremote
     } 
     return funcs_dict  
 
@@ -134,6 +135,25 @@ def return_file(args: Dict) -> bytes:
 
     retrieve_file(keyword, client_socket)
     pass
+
+
+def get_inremote(args: dict) -> bytes:
+    file_name = args['keyword']
+    main_socket = args['client_socket'] # connection between main_server and mock_server
+
+    send_bytes(file_name, main_socket) # send file to the main_server
+
+def send_bytes(file_name: str, connect_socket: object):
+    with open("servidor/armazenar/"+file_name, 'rb') as file:
+        while (True):
+            bts = file.read(1024)
+            if not bts:
+                bts = b'ENDPOINT'
+                connect_socket.send(bts)
+                break
+            connect_socket.send(bts)
+            sleep(0.5)
+        file.close()
 
 
 def change_storage(args: Dict):

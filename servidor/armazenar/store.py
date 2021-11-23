@@ -7,8 +7,6 @@ from server_config import ServerConfig  as config
 from ntpath import basename as get_base_file_name
 
 
-port = ""
-connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 def index_load():
@@ -81,32 +79,54 @@ def send_bytes(file_name: str, connect_socket: object):
             sleep(0.5)
         file.close()
 
-def retrieve_file (
-                    file_name:str,
-                    client_socket:object
-                ):
-    ip_list_file = my_dict['files'][file_name]
-    files_len = len(my_dict['files'][file_name])# Search file
-    if not files_len > 0 :
-        print(f'arquivo não está no index do main server {file_name}')
-        return None
+def retrieve_file (file_name:str, client_socket:object):
+    index_files = index_load()
+    any_addr = search_file(keyword=file_name, index_files=index_files)
 
-    server_alt_addr = ip_list_file[-1]
-    connect_socket.connect((server_alt_addr, port))
+    if any_addr == config.MAIN_ADDRESS:
+        send_bytes(file_name, client_socket)# Send directly for the client
+    else:
+        
+        connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        connect_socket.connect(any_addr)
 
+        args = {
+            'action': 'get_inremote',
+            'keyword': file_name
+        }
 
-
-    header = mk_header(load_args("send file", file_name))
-    connect_socket.send(header)
-    bts = b''
-    while True:
-        bts = connect_socket.recv(1024)
-        if bts == b'ENDPOINT':
-            client_socket.send(bts) # Envia direto para o client
-            break
-        client_socket.send(bts)
+        header = mk_header(args)
+        connect_socket.sendall(header)
         sleep(0.5)
+        bts = b''
+        while True:
+            bts = connect_socket.recv(1024)
+            if bts == b'ENDPOINT':
+                client_socket.send(bts) # Envia direto para o client
+                break
+            client_socket.send(bts)
+            sleep(0.5)
     
+def search_file(keyword, index_files) -> list:
+    try:
+        list_addrs = index_files[keyword]
+        any_addr = valid_addr(list_addrs)
+    except KeyError:
+        raise KeyError('O arquivo não está no indice')
+    else:
+        return any_addr
+
+def valid_addr(list_addrs):
+    if list_addrs.empty:
+            raise ValueError('A lista de endereços está vazia!')
+    for index in range(len(list_addrs)):
+        try:
+            any_valid_addr = list_addrs[index] # 0 is localhost, 1 is mock, 2 is mock2...
+        except IndexError:
+            continue
+        else:
+            return any_valid_addr
 
 def erase_file(
                 file:str
