@@ -28,7 +28,7 @@ def store_file(file_name:str, data:bytes):
 
 def add_file(file_name:str, replic_number:int, data:bytes):
     index_files = index_load()
-    store_file(file_name, data, index_files) #save on local (disk)
+    store_file(file_name, data) #save on local (disk)
     index_files = append_index(index_files, file_name, config.MAIN_ADDRESS) # update index with main address
 
     index_files = send_file_toremote(replic_number, socket, file_name, index_files) #save on remote
@@ -39,7 +39,7 @@ def append_index(index_files, file_name, address) -> dict:
         index_files[file_name].append(address) #register on local(ram)
     except KeyError:# in case the key does not exists
         index_files[file_name] = [address]
-    else:
+    finally:
         return index_files
 
 
@@ -53,14 +53,14 @@ def send_file_toremote(
     header = mk_header({'action':'store_inremote',  'keyword': file_name})
     SERVERS_DICT = config.SERVERS_DICT
 
-    for i in range(replic_number):
+    for i in range(1,replic_number+1):
         remote_addr = SERVERS_DICT[i]
         remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         remote_socket.connect(remote_addr)
 
         remote_socket.send(header)
         sleep(0.5)
-        send_bytes(file_name)
+        send_bytes(file_name, remote_socket)
         
         index_files = append_index(index_files, file_name, remote_addr)
         
@@ -69,7 +69,7 @@ def send_file_toremote(
     return index_files
 
 
-def send_bytes(file_name: str):
+def send_bytes(file_name: str, connect_socket: object):
     with open("servidor/armazenar/"+file_name, 'rb') as file:
         while (True):
             bts = file.read(1024)

@@ -74,7 +74,6 @@ def receive_header(socket:object) -> Dict:
 
 def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
     args = header
-    args['action'] = translate_action(header)
     args['socket'] = socket
     args['client_socket'] = client_socket
     return args
@@ -99,7 +98,7 @@ def store(args:Dict) -> str:
     print('Esperando receber file')
     data = receive_file(client_socket)
 
-    add_file(file_name=file_name ,copies=replic_number, data=data)
+    add_file(file_name=file_name ,replic_number=replic_number, data=data)
 
     return 'Deu certo'
 
