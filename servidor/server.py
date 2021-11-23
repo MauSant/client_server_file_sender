@@ -6,6 +6,8 @@ from armazenar.store import add_file, retrieve_file, manage_storage
 from ntpath import basename as get_base_file_name
 from time import sleep
 
+#Mudança server
+
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
     host = config.MAIN_SERVER_HOST
