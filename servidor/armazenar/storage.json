@@ -1,22 +1,8 @@
 {
-    "files": [
-            "First", ["a", "b"], "Second", ["c", "d"]
-        ],
+    "files": {
+            "First": ["a", "b"], "Second": ["c", "d"]
+        },
     "servers": [
             "main", "son1", "son2"
         ]
 }
-
-file_storage =
-{
-    "first": ['a','b'],
-    "second": ['c','d']
-}
-
-como acessar? 
-file_storage['second']
-
-Como add novos?
-file_storage[new_name] = [value]
-
-file_storage['second'].append(new_value)

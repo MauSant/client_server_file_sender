@@ -31,9 +31,11 @@ def interface():
             
         elif action == '3' :
             action = 'change'
+            print('Qual o nome do arquivo a ser modificado ?')
+            nome_arquivo = input()
             print('Qual o novo numero de replicas a serem salvas ?')
             replics = input()
-            client_controller(action= action, replics=replics)
+            client_controller(action= action, replics=replics, keyword=nome_arquivo)
             
 
 if __name__ == '__main__':

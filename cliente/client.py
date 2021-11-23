@@ -72,10 +72,12 @@ def execute_action(
 
 def retrieve(args: Dict) -> bytes:
     print('retrieve')
-    action = args['action']
-    keyword = args['keyword']
+    client_socket = args['client_socket']
 
 
+    header = mk_header(args)
+    client_socket.sendall(header) # send header
+    print('Retrieve sent header')
     
     '''Não esquece de colocar o listening'''
     pass
@@ -98,7 +100,7 @@ def send_file(args: Dict) -> None:
                 client_socket.send(bts)
                 break
             client_socket.send(bts)
-            sleep(0.5)
+            sleep(0.1)
             
             print(f'Sent.')
     client_socket.close()
