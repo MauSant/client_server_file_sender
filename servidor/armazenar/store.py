@@ -82,7 +82,6 @@ def send_bytes(file_name: str, connect_socket: object):
 def retrieve_file (file_name:str, client_socket:object):
     index_files = index_load()
     any_addr = search_file(keyword=file_name, index_files=index_files)
-
     if any_addr == config.MAIN_ADDRESS:
         send_bytes(file_name, client_socket)# Send directly for the client
     else:
@@ -113,6 +112,7 @@ def search_file(keyword, index_files) -> list:
     except KeyError:
         raise KeyError('O arquivo não está no indice')
     else:
+        any_addr = (any_addr[0], any_addr[1])
         return any_addr
 
 def valid_addr(list_addrs):
