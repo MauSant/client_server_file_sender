@@ -106,7 +106,7 @@ def send_file(args: Dict) -> None:
                 client_socket.send(bts)
                 break
             client_socket.send(bts)
-            sleep(0.1)
+            sleep(0.5)
             
             print(f'Sent.')
     client_socket.close()
