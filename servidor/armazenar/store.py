@@ -86,7 +86,7 @@ def retrieve_file (
                     file_name:str,
                     client_socket:object
                 ):
-
+    storage_load()
     files_index = my_dict['file']
     if not len(files_index[file_name] > 0 ):
         print(f'arquivo não está no index do main server {file_name}')

@@ -2,16 +2,16 @@ from typing import Collection, Optional, Dict, Tuple
 import json
 import socket
 from server_config import ServerConfig  as config
-from armazenar.store import add_file, retrieve_file, manage_storage
+from armazenar.store import add_file, retrieve_file, manage_storage, storage_load
 from ntpath import basename as get_base_file_name
 from time import sleep
 
-#Mudança server
 
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
     host = config.MAIN_SERVER_HOST
     socket = prepare_socket(host, port)
+    storage_load()
     server_listening(socket)
     
 def prepare_socket(host:str, port:str):
@@ -70,12 +70,14 @@ def receive_header(socket:object) -> Dict:
     header = json.loads(serial)
     return header
 
+
 def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
     args = header
     args['action'] = translate_action(header)
     args['socket'] = socket
     args['client_socket'] = client_socket
     return args
+
 
 def translate_action(header: Dict) -> str:
     action = header['action']
