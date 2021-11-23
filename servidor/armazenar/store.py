@@ -36,7 +36,7 @@ def append_index(index_files, file_name, address) -> dict:
     try:
         index_files[file_name].append(address) #register on local(ram)
     except KeyError:# in case the key does not exists
-        index_files[file_name] = [address]
+        index_files[file_name] = (address)
     finally:
         return index_files
 
@@ -86,11 +86,9 @@ def retrieve_file (file_name:str, client_socket:object):
     if any_addr == config.MAIN_ADDRESS:
         send_bytes(file_name, client_socket)# Send directly for the client
     else:
-        
         connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
         connect_socket.connect(any_addr)
-
+        
         args = {
             'action': 'get_inremote',
             'keyword': file_name
