@@ -36,7 +36,7 @@ def append_index(index_files, file_name, address) -> dict:
     try:
         index_files[file_name].append(address) #register on local(ram)
     except KeyError:# in case the key does not exists
-        index_files[file_name] = (address)
+        index_files[file_name] = address
     finally:
         return index_files
 
