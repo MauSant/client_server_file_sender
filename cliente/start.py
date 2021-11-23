@@ -8,6 +8,6 @@ if __name__ == '__main__':
     
     client_controller(
                       action= face.action,
-                      file_path=face.local_arquivo,
-                      replic_number=face.replics
+                      file_path= face.local_arquivo,
+                      replic_number= face.replics,
                      )
