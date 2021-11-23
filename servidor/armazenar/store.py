@@ -115,6 +115,25 @@ def remove_file(
          connect_socket.send(header)
          connect_socket.close()
 
+def manage_storage(file_name, copies):
+    files = my_dict['files']
+    file = files[file_name]
+    i = 0
+    if len(file) > copies & copies > 2:
+        while i < copies:
+          header = mk_header(load_args("erase", file))
+          connect_socket.connect((file.pop(-1),port))
+          connect_socket.send(header)
+          connect_socket.close()
+    else:
+        while i < copies-len(file) & copies < len(my_dict['servers']):
+          header = mk_header(load_args("store", file))
+          connect_socket.connect((my_dict['servers'][-i],port))
+          connect_socket.send(header)
+          send_bytes(file_name)
+          connect_socket.close()
+
+
 def add_host(
              name:str
             ):

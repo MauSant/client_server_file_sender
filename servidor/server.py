@@ -2,9 +2,11 @@ from typing import Collection, Optional, Dict, Tuple
 import json
 import socket
 from server_config import ServerConfig  as config
-from armazenar.store import add_file
+from armazenar.store import add_file, retrieve_file, manage_storage
 from ntpath import basename as get_base_file_name
 from time import sleep
+
+#Mudança server
 
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
@@ -48,7 +50,8 @@ def server_listening(socket):
 def load_funcs():
     funcs_dict = {
         "store": store,
-        "retrieve": retrieve_file
+        "retrieve": return_file,
+        "change": change_storage
     } 
     return funcs_dict  
 
@@ -116,13 +119,16 @@ def receive_file(client_socket:object):
         data += bts
     return data
 
-def retrieve_file(args: Dict) -> bytes:
+def return_file(args: Dict) -> bytes:
     print('retrieve')
     socket = args['socket']
-    action = args['action']
     keyword = args['keyword']
+    retrieve_file(keyword,socket)
     pass
 
-def send_file(header:Dict, file:bytes) -> str:
+def change_storage(args: Dict):
+    keyword = args['keyword']
+    amount = args ['replic_number']
+    manage_storage(keyword, amount)
     pass
 
