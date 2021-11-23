@@ -4,6 +4,8 @@ import socket
 from client_config import ClientConfig  as config
 import json
 from time import sleep
+
+
 def client_controller(
                       action:str,
                       keyword: Optional[str] = None,
@@ -29,6 +31,7 @@ def client_controller(
         print(e)
         socket.close()
         
+
 def request_connection(config) -> Tuple:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,6 +41,7 @@ def request_connection(config) -> Tuple:
         return False, None
     else:
         return True, client_socket
+
 
 def load_args(
               client_socket:object,
@@ -55,12 +59,14 @@ def load_args(
     }
     return args
 
+
 def load_funcs():
     funcs_dict = {
         "retrieve": retrieve,
         "send": send_file
     } 
     return funcs_dict  
+
 
 def execute_action(
                    action:str,
@@ -69,6 +75,7 @@ def execute_action(
     func = funcs_dict[action]
     response = func(args)
     return response
+
 
 def retrieve(args: Dict) -> bytes:
     print('retrieve')
@@ -87,6 +94,7 @@ def retrieve(args: Dict) -> bytes:
 
     '''Não esquece de colocar o listening'''
     pass
+
 
 def send_file(args: Dict) -> None:
     print('send_file')
@@ -115,6 +123,7 @@ def send_file(args: Dict) -> None:
     # msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
     # print(f"[SERVER]: {msg}")
     
+
 def send_bytes(socket: object, file_path:str):
     with open(file_path, 'rb') as file:
         while (True):
@@ -128,6 +137,7 @@ def send_bytes(socket: object, file_path:str):
             sleep(0.5)
         
         print(f'Sent.')
+
 
 def mk_header(args: Dict) -> bytes:
     args.pop('client_socket', None) #Não precisa enviar o client socket
