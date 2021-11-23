@@ -1,8 +1,0 @@
-{
-    "files": {
-            "First": ["a", "b"], "Second": ["c", "d"]
-        },
-    "servers": [
-            "main", "son1", "son2"
-        ]
-}

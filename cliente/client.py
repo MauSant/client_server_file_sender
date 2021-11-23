@@ -80,7 +80,7 @@ def retrieve(args: Dict) -> bytes:
     client_socket.sendall(header) # send header
     print('Retrieve sent header')
     
-    data = receive_file(client_socket)
+    data = receive_byte(client_socket)
     file_copy = open("cliente/BD_client/"+keyword, "wb")
     file_copy.write(data)
     file_copy.close()
@@ -98,23 +98,36 @@ def send_file(args: Dict) -> None:
     client_socket.sendall(header) # send header
     sleep(0.5)
 
-    #Fazer funcao
+    send_bytes(client_socket, file_path)
+    # #Fazer funcao
+    # with open(file_path, 'rb') as file:
+    #     while (True):
+    #         print ('Sending...')
+    #         bts = file.read(config.SIZE)
+    #         if not bts:
+    #             bts = b'ENDPOINT'
+    #             client_socket.send(bts)
+    #             break
+    #         client_socket.send(bts)
+    #         sleep(0.5)
+            
+    client_socket.close()
+    # msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
+    # print(f"[SERVER]: {msg}")
+    
+def send_bytes(socket: object, file_path:str):
     with open(file_path, 'rb') as file:
         while (True):
             print ('Sending...')
             bts = file.read(config.SIZE)
             if not bts:
                 bts = b'ENDPOINT'
-                client_socket.send(bts)
+                socket.send(bts)
                 break
-            client_socket.send(bts)
+            socket.send(bts)
             sleep(0.5)
-            
-            print(f'Sent.')
-    client_socket.close()
-    # msg = client_socket.recv(config.SIZE).decode(config.FORMAT)
-    # print(f"[SERVER]: {msg}")
-    
+        
+        print(f'Sent.')
 
 def mk_header(args: Dict) -> bytes:
     args.pop('client_socket', None) #Não precisa enviar o client socket
@@ -125,7 +138,7 @@ def mk_header(args: Dict) -> bytes:
     return serialized
 
    
-def receive_file(client_socket:object):
+def receive_byte(client_socket:object) -> bytes:
     data = b''
     bts = b''
     while True:

@@ -3,74 +3,73 @@ import  json
 import	socket
 from time import sleep
 from typing import Dict
+from server_config import ServerConfig  as config
+from ntpath import basename as get_base_file_name
+
 
 port = ""
 connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-my_dict = {'files' : [], 'servers' : []}
 
-def storage_load():
-    with open('servidor/armazenar/storage.json', 'r') as fp:
-        data = json.load(fp)
-    my_dict["files"] = data["files"]
-    my_dict["servers"] = data["servers"]
+def index_load():
+    with open('servidor/armazenar/index.json', 'r') as fp:
+        index_files = json.load(fp)
+    return index_files
 
-def storage_save():
-    with open('servidor/armazenar/storage.json', 'w') as fp:
-        json.dump(my_dict, fp)
+def index_save(index_files) -> dict:
+    with open('servidor/armazenar/index.json', 'w') as fp:
+        json.dump(index_files, fp)
 
-def load_args(
-              action:str,
-              file_name:str
-             ):
-    args = {
-        'action': action,
-        'file_name': file_name
-    }
-    return args
 
-def load_funcs():
-    funcs_dict = {
-        "store": store_file,
-        "add file": add_file,
-        "retieve": retrieve_file,
-        "erase":erase_file,
-        "remove file": remove_file,
-        "add host": add_host,
-        "remove host": remove_host,
-        "send file": send_bytes
-    } 
-    return funcs_dict  
-
-def store_file(
-             name:str,
-             data:bytes
-            ):
-    file_copy = open("servidor/armazenar/"+name, "wb")
+def store_file(file_name:str, data:bytes):
+    file_copy = open("servidor/armazenar/"+file_name, "wb")
     file_copy.write(data)
     file_copy.close()
 
-def add_file(
-             name:str,
-             copies:int,
-             data:bytes
-            ):
-    store_file(name, data)
-    my_dict['files'][name] = []
-    # my_dict['files'][name].append("servidor/armazenar/"+name)
-    i = 0
-    list_aux = my_dict['files'][name]
-    while i < copies-1:
-         connect_socket.connect((my_dict['servers'][i],port))
-         list_aux.append(my_dict['servers'][i])
-         header = mk_header(load_args("store", name))
-         connect_socket.send(header)
-         send_bytes(name)
-         connect_socket.close()
+def add_file(file_name:str, replic_number:int, data:bytes):
+    index_files = index_load()
+    store_file(file_name, data, index_files) #save on local (disk)
+    index_files = append_index(index_files, file_name, config.MAIN_ADDRESS) # update index with main address
 
-def send_bytes(
-                file_name:str
-              ):
+    index_files = send_file_toremote(replic_number, socket, file_name, index_files) #save on remote
+    index_save(index_files) #register on index.json
+
+def append_index(index_files, file_name, address) -> dict:
+    try:
+        index_files[file_name].append(address) #register on local(ram)
+    except KeyError:# in case the key does not exists
+        index_files[file_name] = [address]
+    else:
+        return index_files
+
+
+def send_file_toremote(
+                       replic_number: int,
+                       socket: object,
+                       file_name:str,
+                       index_files: dict
+                      ) -> dict:
+    
+    header = mk_header({'action':'store_inremote',  'keyword': file_name})
+    SERVERS_DICT = config.SERVERS_DICT
+
+    for i in range(replic_number):
+        remote_addr = SERVERS_DICT[i]
+        remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        remote_socket.connect(remote_addr)
+
+        remote_socket.send(header)
+        sleep(0.5)
+        send_bytes(file_name)
+        
+        index_files = append_index(index_files, file_name, remote_addr)
+        
+        remote_socket.close()
+
+    return index_files
+
+
+def send_bytes(file_name: str):
     with open("servidor/armazenar/"+file_name, 'rb') as file:
         while (True):
             bts = file.read(1024)

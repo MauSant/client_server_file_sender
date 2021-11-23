@@ -2,7 +2,7 @@ from typing import Collection, Optional, Dict, Tuple
 import json
 import socket
 from server_config import ServerConfig  as config
-from armazenar.store import add_file, retrieve_file, manage_storage, storage_load
+from armazenar.store import add_file, retrieve_file, manage_storage, store_file
 from ntpath import basename as get_base_file_name
 from time import sleep
 
@@ -11,7 +11,6 @@ def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
     host = config.MAIN_SERVER_HOST
     socket = prepare_socket(host, port)
-    storage_load()
     server_listening(socket)
     
 def prepare_socket(host:str, port:str):
@@ -49,11 +48,13 @@ def server_listening(socket):
 '''As funções a serem utilizadas no execute_action, estão aqui '''
 def load_funcs():
     funcs_dict = {
-        "store": store,
+        "send": store,
         "retrieve": return_file,
-        "change": change_storage
+        "change": change_storage,
+        'store_inremote': store_inremote
     } 
     return funcs_dict  
+
 
 def accept_connection(socket:object) -> Tuple:
     try:
@@ -79,19 +80,11 @@ def load_args(socket:object, client_socket:object, header:Dict) -> Dict:
     return args
 
 
-def translate_action(header: Dict) -> str:
-    action = header['action']
-    if action == 'send':
-        return 'store'
-    elif action == 'retrieve':
-        return 'retrieve'
-    else:
-        raise ValueError('Nenhuma ação é valida')
-
 def execute_action(action:str, funcs_dict: Dict, args: Dict) -> str:
     func = funcs_dict[action]
     response = func(args)
     return response
+
 
 def store(args:Dict) -> str:
     print('store')
@@ -101,14 +94,26 @@ def store(args:Dict) -> str:
     file_path = args['file_path']
     replic_number = args['replic_number']
 
-    name = get_base_file_name(file_path)
+    file_name = get_base_file_name(file_path)
 
     print('Esperando receber file')
     data = receive_file(client_socket)
 
-    add_file(name=name,copies=replic_number, data=data)
+    add_file(file_name=file_name ,copies=replic_number, data=data)
 
     return 'Deu certo'
+
+
+def store_inremote(args: dict):
+    print('store in remote')
+    client_socket = args['client_socket']
+    file_name = args['keyword']
+
+
+    print('Esperando receber file')
+    data = receive_file(client_socket)
+    store_file(file_name, data)
+
 
 def receive_file(client_socket:object):
     data = b''
@@ -121,6 +126,7 @@ def receive_file(client_socket:object):
         data += bts
     return data
 
+
 def return_file(args: Dict) -> bytes:
     print('retrieve')
     socket = args['socket']
@@ -129,6 +135,7 @@ def return_file(args: Dict) -> bytes:
 
     retrieve_file(keyword, client_socket)
     pass
+
 
 def change_storage(args: Dict):
     keyword = args['keyword']
