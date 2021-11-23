@@ -86,12 +86,13 @@ def retrieve_file (
                     file_name:str,
                     client_socket:object
                 ):
-    files_index = my_dict['files']
-    if not len(files_index[file_name] > 0 ):
+    ip_list_file = my_dict['files'][file_name]
+    files_len = len(my_dict['files'][file_name])# Search file
+    if not files_len > 0 :
         print(f'arquivo não está no index do main server {file_name}')
         return None
 
-    server_alt_addr = files_index[file_name][-1]
+    server_alt_addr = ip_list_file[-1]
     connect_socket.connect((server_alt_addr, port))
 
 

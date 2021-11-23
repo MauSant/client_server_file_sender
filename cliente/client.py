@@ -96,6 +96,8 @@ def send_file(args: Dict) -> None:
     
     header = mk_header(args)
     client_socket.sendall(header) # send header
+    sleep(0.5)
+
     #Fazer funcao
     with open(file_path, 'rb') as file:
         while (True):
