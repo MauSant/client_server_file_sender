@@ -1,3 +1,5 @@
+from client import client_controller
+
 def interface():
 
     global action
@@ -15,14 +17,25 @@ def interface():
             print('Quantas replicas desejam salvar ?')
             global replics
             replics = input()
+            client_controller(
+                      action= action,
+                      file_path= local_arquivo,
+                      replic_number= replics,
+                    )
         elif action == '2' :
-            ction = 'retrieve'
+            action = 'retrieve'
             print('Qual o nome do arquivo a ser buscado ?')
             global nome_arquivo
             nome_arquivo = input()
+            client_controller(action= action, keyword=nome_arquivo )
+            
         elif action == '3' :
             action = 'change'
             print('Qual o novo numero de replicas a serem salvas ?')
             replics = input()
+            client_controller(action= action, replics=replics)
+            
 
-interface()
+if __name__ == '__main__':
+
+    interface()
