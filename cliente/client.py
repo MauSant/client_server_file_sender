@@ -63,7 +63,8 @@ def load_args(
 def load_funcs():
     funcs_dict = {
         "retrieve": retrieve,
-        "send": send_file
+        "send": send_file,
+        "change": manage_storage
     } 
     return funcs_dict  
 
@@ -138,6 +139,15 @@ def send_bytes(socket: object, file_path:str):
         
         print(f'Sent.')
 
+def manage_storage(args:Dict):
+    print('change_amount')
+
+    client_socket = args['client_socket']
+    
+    header = mk_header(args)
+    client_socket.sendall(header) # send header
+    sleep(0.5)
+    client_socket.close()
 
 def mk_header(args: Dict) -> bytes:
     args.pop('client_socket', None) #Não precisa enviar o client socket

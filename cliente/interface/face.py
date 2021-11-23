@@ -32,7 +32,7 @@ def interface():
             nome_arquivo = input()
             print('Qual o novo numero de replicas a serem salvas ?')
             replics = int(input())
-            client_controller(action= action, replics=replics, keyword=nome_arquivo)
+            client_controller(action= action, replic_number=replics, keyword=nome_arquivo)
             
 
 if __name__ == '__main__':

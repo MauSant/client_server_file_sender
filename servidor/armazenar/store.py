@@ -159,7 +159,7 @@ def manage_storage(file_name, replic_number):
     connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     i = 0
-    if len(list_addrs) > replic_number & replic_number > 2:
+    if len(list_addrs) > replic_number & replic_number > 1:
         while i < replic_number:
           header = mk_header({'action':'erase',  'keyword': file_name})
           connect_socket.connect((list_addrs.pop(-1)))

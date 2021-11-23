@@ -10,18 +10,18 @@ from ntpath import basename as get_base_file_name
 
 
 def index_load():
-    with open('servidor/armazenar/index.json', 'r') as fp:
+    with open('servidor-mock/armazenar/index.json', 'r') as fp:
         index_files = json.load(fp)
     return index_files
 
 
 def index_save(index_files) -> dict:
-    with open('servidor/armazenar/index.json', 'w') as fp:
+    with open('servidor-mock/armazenar/index.json', 'w') as fp:
         json.dump(index_files, fp)
 
 
 def store_file(file_name:str, data:bytes):
-    file_copy = open("servidor/armazenar/"+file_name, "wb")
+    file_copy = open("servidor-mock/armazenar/"+file_name, "wb")
     file_copy.write(data)
     file_copy.close()
 
@@ -71,7 +71,7 @@ def send_file_toremote(
 
 
 def send_bytes(file_name: str, connect_socket: object):
-    with open("servidor/armazenar/"+file_name, 'rb') as file:
+    with open("servidor-mock/armazenar/"+file_name, 'rb') as file:
         while (True):
             bts = file.read(1024)
             if not bts:
@@ -136,7 +136,7 @@ def valid_addr(list_addrs):
 def erase_file(
                 file:str
             ):
-    os.remove("servidor/armazenar/"+file)
+    os.remove("servidor-mock/armazenar/"+file)
 
 
 def remove_file(
