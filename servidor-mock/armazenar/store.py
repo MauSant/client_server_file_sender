@@ -1,6 +1,5 @@
 import  os
 import  json
-from servidor.server import server_listening
 import	socket
 from time import sleep
 from typing import Dict
@@ -153,22 +152,20 @@ def remove_file(
          connect_socket.close()
 
 
-def manage_storage(file_name, replic_number):
-    index_files = index_load()
-    list_addrs = index_files[file_name]
-    connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+def manage_storage(file_name, copies):
+    files = my_dict['files']
+    file = files[file_name]
     i = 0
-    if len(list_addrs) > replic_number & replic_number > 2:
-        while i < replic_number:
+    if len(file) > copies & copies > 2:
+        while i < copies:
           header = mk_header(load_args("erase", file))
-          connect_socket.connect((list_addrs.pop(-1)))
+          connect_socket.connect((file.pop(-1),port))
           connect_socket.send(header)
           connect_socket.close()
     else:
-        while i < replic_number-len(file) & replic_number < len(my_dict['servers']):
+        while i < copies-len(file) & copies < len(my_dict['servers']):
           header = mk_header(load_args("store", file))
-          connect_socket.connect((acessa pela list_addrs))
+          connect_socket.connect((my_dict['servers'][-i],port))
           connect_socket.send(header)
           send_bytes(file_name)
           connect_socket.close()
