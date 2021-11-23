@@ -12,11 +12,9 @@ def interface():
         if action == '1' :
             action = 'send'
             print('Qual o path para o arquvio ?')
-            global local_arquivo
             local_arquivo = input()
             print('Quantas replicas desejam salvar ?')
-            global replics
-            replics = input()
+            replics = int(input())
             client_controller(
                       action= action,
                       file_path= local_arquivo,
@@ -25,7 +23,6 @@ def interface():
         elif action == '2' :
             action = 'retrieve'
             print('Qual o nome do arquivo a ser buscado ?')
-            global nome_arquivo
             nome_arquivo = input()
             client_controller(action= action, keyword=nome_arquivo)
             
@@ -34,7 +31,7 @@ def interface():
             print('Qual o nome do arquivo a ser modificado ?')
             nome_arquivo = input()
             print('Qual o novo numero de replicas a serem salvas ?')
-            replics = input()
+            replics = int(input())
             client_controller(action= action, replics=replics, keyword=nome_arquivo)
             
 
