@@ -2,8 +2,6 @@ from typing import Collection, Optional, Dict, Tuple
 import json
 import socket
 from server_config import ServerConfig  as config
-from armazenar.store import add_file, retrieve_file, manage_storage, store_file
-from ntpath import basename as get_base_file_name
 from time import sleep
 import os
 
@@ -123,15 +121,14 @@ def send_bytes(file_name: str, connect_socket: object):
             sleep(0.5)
         file.close()
 
+
 def erase_file(args: dict):
     file_name = args['keyword']
     os.remove("servidor-mock/armazenar/"+file_name)
 
 
-
-def change_storage(args: Dict):
-    keyword = args['keyword']
-    amount = args ['replic_number']
-    manage_storage(keyword, amount)
-    pass
+def store_file(file_name:str, data:bytes):
+    file_copy = open("servidor-mock/armazenar/"+file_name, "wb")
+    file_copy.write(data)
+    file_copy.close()
 
