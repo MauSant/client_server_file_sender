@@ -51,8 +51,6 @@ def load_funcs():
         "send": store,
         "retrieve": return_file,
         "change": change_storage,
-        'store_inremote': store_inremote,
-        'get_inremote':get_inremote
     } 
     return funcs_dict  
 
