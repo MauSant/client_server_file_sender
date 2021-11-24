@@ -158,7 +158,8 @@ def manage_storage(file_name, replic_number):
         while replic_number > len(list_addrs) -1:
             SERVER_DICT = config.SERVERS_DICT
             for any_addr in SERVER_DICT.values():
-                if [ any_addr[0],any_addr[1] ]  in list_addrs:
+                l_any_addr = [ any_addr[0],any_addr[1] ] 
+                if l_any_addr  in list_addrs:
                     continue
 
                 header = mk_header({'action':'store_inremote',  'keyword': file_name})
@@ -167,7 +168,7 @@ def manage_storage(file_name, replic_number):
                 connect_socket.send(header)
                 sleep(0.5)
                 send_bytes(file_name,connect_socket)
-                index_files = append_index(index_files, file_name, any_addr)
+                index_files = append_index(index_files, file_name, l_any_addr)
                 list_addrs = index_files[file_name]
                 connect_socket.close()
                 break

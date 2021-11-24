@@ -110,7 +110,7 @@ def receive_file(client_socket:object):
 
 
 def send_bytes(file_name: str, connect_socket: object):
-    with open("servidor/armazenar/"+file_name, 'rb') as file:
+    with open("servidor-mock/armazenar/"+file_name, 'rb') as file:
         while (True):
             bts = file.read(1024)
             if not bts:

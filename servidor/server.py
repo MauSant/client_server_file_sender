@@ -5,7 +5,7 @@ from server_config import ServerConfig  as config
 from armazenar.store import add_file, retrieve_file, manage_storage, store_file
 from ntpath import basename as get_base_file_name
 from time import sleep
-
+import os
 
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
@@ -51,6 +51,7 @@ def load_funcs():
         "send": store,
         "retrieve": return_file,
         "change": change_storage,
+        "erase": erase_file
     } 
     return funcs_dict  
 
@@ -143,3 +144,6 @@ def change_storage(args: Dict):
     amount = args ['replic_number']
     manage_storage(keyword, amount)
 
+def erase_file(args: dict):
+    file_name = args['keyword']
+    os.remove("servidor/armazenar/"+file_name)
