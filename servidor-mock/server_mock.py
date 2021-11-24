@@ -116,6 +116,7 @@ def send_bytes(file_name: str, connect_socket: object):
             if not bts:
                 bts = b'ENDPOINT'
                 connect_socket.send(bts)
+                sleep(0.5)
                 break
             connect_socket.send(bts)
             sleep(0.5)

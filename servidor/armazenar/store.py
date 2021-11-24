@@ -78,6 +78,7 @@ def send_bytes(file_name: str, connect_socket: object):
             if not bts:
                 bts = b'ENDPOINT'
                 connect_socket.send(bts)
+                sleep(0.5)
                 break
             connect_socket.send(bts)
             sleep(0.5)
@@ -106,6 +107,7 @@ def retrieve_file (file_name:str, client_socket:object):
             bts = connect_socket.recv(1024)
             if bts == b'ENDPOINT':
                 client_socket.send(bts) # Envia direto para o client
+                sleep(0.5)
                 break
             client_socket.send(bts)
             sleep(0.5)
@@ -134,23 +136,8 @@ def valid_addr(list_addrs):
             return any_valid_addr
 
 
-def erase_file(
-                file:str
-            ):
+def erase_file(file:str):
     os.remove("servidor/armazenar/"+file)
-
-
-def remove_file(
-                 file:str
-                ):
-    erase_file(file)
-    position = my_dict['files']
-    repositories = position[file]
-    header = mk_header(load_args("erase", file))
-    for host in repositories:
-         connect_socket.connect((host,port))
-         connect_socket.send(header)
-         connect_socket.close()
 
 
 def manage_storage(file_name, replic_number):
@@ -187,28 +174,8 @@ def manage_storage(file_name, replic_number):
     index_save(index_files)
     
 
-	
-		
-
-def add_host(
-             name:str
-            ):
-    my_dict['servers'].append(name)
-
-
-def remove_host(name:str):
-    my_dict['servers'].remove(name)
-
-
 def mk_header(args: Dict) -> bytes:
     header_j = json.dumps(args)
     serialized = header_j.encode('utf-8')
     
     return serialized
-
-
-if __name__ == '__main__':
-    pass
-    # storage_load()
-    # print(file_storage[1])
-    # print(servers_storage[0])

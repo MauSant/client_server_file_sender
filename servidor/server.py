@@ -104,17 +104,6 @@ def store(args:Dict) -> str:
     return 'Deu certo'
 
 
-def store_inremote(args: dict):
-    print('store in remote')
-    client_socket = args['client_socket']
-    file_name = args['keyword']
-
-
-    print('Esperando receber file')
-    data = receive_file(client_socket)
-    store_file(file_name, data)
-
-
 def receive_file(client_socket:object):
     data = b''
     bts = b''
@@ -137,12 +126,6 @@ def return_file(args: Dict) -> bytes:
     pass
 
 
-def get_inremote(args: dict) -> bytes:
-    file_name = args['keyword']
-    main_socket = args['client_socket'] # connection between main_server and mock_server
-
-    send_bytes(file_name, main_socket) # send file to the main_server
-
 def send_bytes(file_name: str, connect_socket: object):
     with open("servidor/armazenar/"+file_name, 'rb') as file:
         while (True):
@@ -150,6 +133,7 @@ def send_bytes(file_name: str, connect_socket: object):
             if not bts:
                 bts = b'ENDPOINT'
                 connect_socket.send(bts)
+                sleep(0.5)
                 break
             connect_socket.send(bts)
             sleep(0.5)
@@ -160,5 +144,4 @@ def change_storage(args: Dict):
     keyword = args['keyword']
     amount = args ['replic_number']
     manage_storage(keyword, amount)
-    pass
 
