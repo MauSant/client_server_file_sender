@@ -5,7 +5,7 @@ from server_config import ServerConfig  as config
 from armazenar.store import add_file, retrieve_file, manage_storage, store_file
 from ntpath import basename as get_base_file_name
 from time import sleep
-
+import os
 
 def server_controller() -> None:
     port = config.MAIN_SERVER_PORT
@@ -49,7 +49,8 @@ def server_listening(socket):
 def load_funcs():
     funcs_dict = {
         'store_inremote': store_inremote,
-        'get_inremote':get_inremote
+        'get_inremote': get_inremote,
+        'erase': erase_file
     } 
     return funcs_dict  
 
@@ -122,9 +123,11 @@ def send_bytes(file_name: str, connect_socket: object):
             sleep(0.5)
         file.close()
 
+def erase_file(args: dict):
+    file_name = args['keyword']
+    os.remove("servidor-mock/armazenar/"+file_name)
 
-def delete_inremote():
-    pass
+
 
 def change_storage(args: Dict):
     keyword = args['keyword']

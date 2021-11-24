@@ -156,23 +156,39 @@ def remove_file(
 def manage_storage(file_name, replic_number):
     index_files = index_load()
     list_addrs = index_files[file_name]
-    connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     i = 0
-    if len(list_addrs) > replic_number & replic_number > 1:
-        while i < replic_number:
-          header = mk_header({'action':'erase',  'keyword': file_name})
-          connect_socket.connect((list_addrs.pop(-1)))
-          connect_socket.send(header)
-          connect_socket.close()
+    if len(list_addrs) > replic_number & replic_number >= 0: # to reduce number of replics
+        header = mk_header({'action':'erase',  'keyword': file_name})
+        while len(list_addrs) > replic_number +1 :
+            any_addr = list_addrs.pop(-1)
+            connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            connect_socket.connect( (any_addr[0],any_addr[1]) )
+            connect_socket.send(header)
+            connect_socket.close()
+            sleep(0.5)
     else:
-        while i < replic_number-len(file_name) & replic_number < len(list_addrs):
-          header = mk_header({'action':'store',  'keyword': file_name})
-          connect_socket.connect((list_addrs))
-          connect_socket.send(header)
-          send_bytes(file_name)
-          connect_socket.close()
+        while replic_number > len(list_addrs) -1:
+            SERVER_DICT = config.SERVERS_DICT
+            for any_addr in SERVER_DICT.values():
+                if [ any_addr[0],any_addr[1] ]  in list_addrs:
+                    continue
 
+                header = mk_header({'action':'store_inremote',  'keyword': file_name})
+                connect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                connect_socket.connect(any_addr)
+                connect_socket.send(header)
+                sleep(0.5)
+                send_bytes(file_name,connect_socket)
+                index_files = append_index(index_files, file_name, any_addr)
+                list_addrs = index_files[file_name]
+                connect_socket.close()
+                break
+    index_save(index_files)
+    
+
+	
+		
 
 def add_host(
              name:str
